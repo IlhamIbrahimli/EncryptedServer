@@ -16,7 +16,7 @@ from datetime import datetime
 import threading
 import select
 import sys
-
+import time
 key = "fhak1x7d9ujsfysd"
 iv =  'k1809vcqhpb7jnbd'.encode('utf-8')
 name = ""
@@ -78,9 +78,11 @@ class CheckAuth(App):
         global isUpdated
         sock.sendall("UpdateMessages".encode())
         updateData = sock.recv(4096)
-
+        print(updateData.decode())
         if updateData.decode() != "Updated":
+            
             messages = messages + decrypt(updateData.decode("utf-8"),key,iv).decode().strip() + "\n"
+            print(updateData.decode())
             while updateData.decode() != "Updated":
                 updateData = sock.recv(4096)
                 print(updateData)
@@ -91,7 +93,10 @@ class CheckAuth(App):
                     break
                 else:
                     messages = messages + decrypt(updateData.decode("utf-8"),key,iv).decode() + "\n"
-            print(messages)
+        self.sm.switch_to(self.s2)
+        thread = thread1()
+        thread.start()
+        print(messages)
        
     def sendMessage(self,widge): 
         
@@ -153,6 +158,7 @@ class CheckAuth(App):
 auth = CheckAuth()
 auth.run()
 sock.sendall("end".encode())
+time.sleep(0.1)
 sock.close()
 sys.exit()
 
