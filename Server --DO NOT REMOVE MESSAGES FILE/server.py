@@ -49,8 +49,11 @@ class updateThread(threading.Thread):
    def run(self):
       self.file.seek(0)
       for self.g in self.file:
-         self.notifSock.sendall(self.g[:-1].encode())
-         time.sleep(0.1)
+         if self.g =="":
+            break
+         else:
+            self.notifSock.sendall(self.g[:-1].encode())
+            time.sleep(0.1)
       self.notifSock.sendall("Updated".encode())
       sys.exit()
 while True:
