@@ -13,6 +13,7 @@ you can set the ip in the ip variable, but this is untested.
 To change the key, go to 
 [line 23](https://github.com/IlhamIbrahimli/EncryptedServer/blob/main/Server/server.py).
 ![image](https://user-images.githubusercontent.com/78649705/232284204-b45e8bc0-3a60-4d58-a034-4649d173e70f.png)
+
 Make sure that the 'Messages.txt' file exists in the directory.
 Before running the client, run the pip command `pip install kivy pycryptodome`
 to make sure the dependancies are installed.
