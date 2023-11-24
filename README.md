@@ -17,7 +17,7 @@ To change the key, go to  [line 23](https://github.com/IlhamIbrahimli/EncryptedS
 The key is an md5 encrypted hash.
 Remember the plaintext version inorder to give it to users.
 
-Make sure that the 'Messages.txt' file exists in the directory.
+Make sure that the 'Messages.txt' file exists in the server directory.
 Before running the client, run the pip command `pip install kivymd pycryptodome`
 to make sure the dependancies are installed.
 Now run the client and input your name, the ip address of the server and the unencrypted key.
