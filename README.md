@@ -9,10 +9,11 @@ You will need the ip address of the server, or the public ip.
 ## To connect client
 Run the [client.py](https://github.com/IlhamIbrahimli/EncryptedServer/blob/main/client.py)
 file and input a name, pass key (see later) and the ip of the server.
-you can set the ip in the ip variable, but this is untested.
 To change the key, go to 
 [line 23](https://github.com/IlhamIbrahimli/EncryptedServer/blob/main/Server/server.py).
 ![image](https://user-images.githubusercontent.com/78649705/232284204-b45e8bc0-3a60-4d58-a034-4649d173e70f.png)
+The key is an md5 encrypted hash.
+Remember the plaintext version inorder to give it to users.
 
 Make sure that the 'Messages.txt' file exists in the directory.
 Before running the client, run the pip command `pip install kivy pycryptodome`
@@ -20,3 +21,6 @@ to make sure the dependancies are installed.
 Now run the client and input your name, the ip address of the server and the unencrypted key.
 ## Usage
 When you connect, the messages file will load all previous messages sent on the server previously.
+
+### Future Plans
+Add RSA instead of AES encryption
