@@ -3,7 +3,7 @@ This app is a combination of server and client which uses end to end encryption 
 To log on you must also provide a hashed md5 key or you will not be able to read and write messages or connect to the socket.
 ## To run server
 Go to the messages file and run server.py. (make sure port 1000 is available)
-This does not require any dependancies to run.
+This does not require any dependencies to run.
 You will need the ip address of the server, or the public ip.
 (you will need to expose port 1000)
 ## To connect client
@@ -19,7 +19,7 @@ Remember the plaintext version inorder to give it to users.
 
 Make sure that the 'Messages.txt' file exists in the server directory.
 Before running the client, run the pip command `pip install kivymd pycryptodome`
-to make sure the dependancies are installed.
+to make sure the dependencies are installed.
 Now run the client and input your name, the ip address of the server and the unencrypted key.
 ## Usage
 When you connect, the messages file will load all previous messages sent on the server previously.
