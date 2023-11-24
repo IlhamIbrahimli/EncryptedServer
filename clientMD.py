@@ -39,7 +39,6 @@ class thread1(threading.Thread):
     def __init__(self):
       threading.Thread.__init__(self)
 
-      
     def run(self):
         global messages
         
@@ -50,6 +49,7 @@ class thread1(threading.Thread):
                 data = sock.recv(131072)
                 
                 messages = messages + decrypt(data.decode("utf-8"),key,iv).decode() + "\n"
+                
 def confirmAndConnect(instance):
     global name
     global handshake
@@ -79,30 +79,27 @@ class CheckAuth(MDApp):
         global messages
         global sock
         global isUpdated
-        encryptedMs = ""
         sock.sendall("UpdateMessages".encode())
         updateData = sock.recv(131072)
-        print(updateData.decode())
         if updateData.decode() != "Updated":
             
-            encryptedMs += updateData.decode()
+            messages = messages + decrypt(updateData.decode("utf-8"),key,iv).decode().strip() + "\n"
 
             while updateData.decode() != "Updated":
                 updateData = sock.recv(131072)
-                print(updateData)
+
                 if updateData.decode() == "Updated":
-                    
+                    self.sm.switch_to(self.s2)
+                    thread = thread1()
+                    thread.start()
                     break
                 else:
-                    encryptedMs += updateData.decode()
-        encryptedMs = encryptedMs.split("\n")
-        for i in encryptedMs:
-            messages += decrypt(i[:-1]) + "\n"
+                    messages = messages + decrypt(updateData.decode("utf-8"),key,iv).decode() + "\n"
         self.sm.switch_to(self.s2)
+        self.messagePrintOutArea.scroll_y = 0
         thread = thread1()
         thread.start()
-        self.messagePrintOutArea.scroll_x = 1
-        print(messages)
+
        
     def sendMessage(self,widge): 
         
@@ -116,10 +113,13 @@ class CheckAuth(MDApp):
         global messages
         self.messagePrintOut.text = ""
         self.messagePrintOut.text = messages
+        self.messagePrintOut.height = messages.count("\n") * 20
+        self.messagePrintOut.text_size = (self.messagePrintOut.width * 0.98, self.messagePrintOut.height)
     def build(self):
 
         global isUpdated
         self.theme_cls.theme_style = "Dark"
+
         self.theme_cls.primary_palette = "Purple"
         self.theme_cls.accent_palette = "Orange"
         self.sm = MDScreenManager()
@@ -130,13 +130,13 @@ class CheckAuth(MDApp):
         global ipText
         global messages
         layout = MDGridLayout(cols=1)
-       
+
         nameText = MDTextField(size_hint_y=None, height=30,multiline=False,hint_text="Name")
         layout.add_widget(nameText)
-        
+       
         handshakeText = MDTextField(size_hint_y=None, height=30,multiline=False,hint_text="Key")
         layout.add_widget(handshakeText)
-        
+
         ipText = MDTextField(size_hint_y=None, height=30,multiline=False,hint_text="IP")
         layout.add_widget(ipText)
         
@@ -148,14 +148,14 @@ class CheckAuth(MDApp):
         MessageLayout = MDGridLayout(cols=1)
         self.messagePrintOutArea = MDScrollView(do_scroll_y=True)
         self.messagePrintOut = MDLabel(text=messages,size_hint=(None,None),width=Window.size[0])
-        self.messagePrintOut.height = self.messagePrintOut.texture_size[1]
-        self.messagePrintOut.text_size = (self.messagePrintOut.width * 0.98, None)
+
         self.entry = MDTextField(size_hint_y=None, height=90,halign="left",hint_text="Enter Message",mode="rectangle")
         btn2 = MDRaisedButton(text="send",size_hint_y=None, height=50)
         btn2.bind(on_press=self.sendMessage)
         Clock.schedule_interval(self.UPDATE,0.1)
         MessageLayout.add_widget(self.messagePrintOutArea)
         self.messagePrintOutArea.add_widget(self.messagePrintOut)
+
         MessageLayout.add_widget(self.entry)
         MessageLayout.add_widget(btn2)
         self.s2.add_widget(MessageLayout)

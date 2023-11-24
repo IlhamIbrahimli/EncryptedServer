@@ -17,10 +17,10 @@ class myThread (threading.Thread):
         accept()
 def accept():
     currc, addr = sock.accept()
-    print(currc)
+
     handShake = currc.recv(32)
     
-    if handShake.decode("utf-8") != "e8dc4081b13434b45189a720b77b6818":
+    if handShake.decode("utf-8") != "e10adc3949ba59abbe56e057f20f883e":
         currc.sendall("Tx2".encode())
         time.sleep(0.1)
         currc.close()
@@ -47,9 +47,8 @@ class updateThread(threading.Thread):
       self.notifSock = notifSock
       self.file = file
    def run(self):
-      
-      sock.sendall(self.file.read().encode())
-      sock.sendall("Updated".encode())
+      self.notifSock.sendall(self.file.read().encode())
+      self.notifSock.sendall("Updated".encode())
       sys.exit()
 while True:
    if len(ClientList) != 0:
