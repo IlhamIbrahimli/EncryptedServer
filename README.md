@@ -9,8 +9,8 @@ You will need the ip address of the server, or the public ip.
 ## To connect client
 Run the [client.py](https://github.com/IlhamIbrahimli/EncryptedServer/blob/main/client.py)
 file and input a name, pass key (see later) and the ip of the server.
-To change the key, go to 
-[line 23](https://github.com/IlhamIbrahimli/EncryptedServer/blob/main/Server/server.py).
+
+To change the key, go to  [line 23](https://github.com/IlhamIbrahimli/EncryptedServer/blob/main/Server/server.py).
 ![image](https://user-images.githubusercontent.com/78649705/232284204-b45e8bc0-3a60-4d58-a034-4649d173e70f.png)
 The key is an md5 encrypted hash.
 Remember the plaintext version inorder to give it to users.
