@@ -32,6 +32,7 @@ def update_message():
    messageFile.write(message.decode("utf-8") + "\n")
    messageFile.flush()
    messages = []
+   print(message)
    for i in range(len(ClientList)):
       ClientList[i].sendall(message)
 sock = socket.socket()
@@ -47,6 +48,7 @@ class updateThread(threading.Thread):
       self.notifSock = notifSock
       self.file = file
    def run(self):
+      self.file.seek(0)
       self.notifSock.sendall(self.file.read().encode())
       self.notifSock.sendall("Updated".encode())
       sys.exit()
@@ -60,7 +62,7 @@ while True:
          if message.decode() == "UpdateMessages":
             updateThread(notified_socket,messageFile).start()
          else:
-            if message.decode() == "end":
+            if message.decode() == "end" or message.decode() == "":
                ClientList.remove(notified_socket)
                notified_socket.close()
             else:
