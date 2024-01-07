@@ -25,7 +25,7 @@ name = ""
 handshake = ""
 ip = ""
 messages = ""
-
+Window.softinput_mode = "below_target"
 def encrypt(data,key,iv):
     data= pad(data.encode(),16)
     cipher = AES.new(key.encode('utf-8'),AES.MODE_CBC,iv)
@@ -47,7 +47,7 @@ class thread1(threading.Thread):
             ready = select.select([sock], [], [], )
             if ready[0]:
                 data = sock.recv(131072)
-                
+                print(data.decode()[:-1])
                 messages = messages + decrypt(data.decode("utf-8"),key,iv).decode() + "\n"
                 
 def confirmAndConnect(instance):
@@ -81,20 +81,21 @@ class CheckAuth(MDApp):
         global isUpdated
         sock.sendall("UpdateMessages".encode())
         updateData = sock.recv(131072)
-        if updateData.decode() != "Updated":
-            
-            messages = messages + decrypt(updateData.decode("utf-8"),key,iv).decode().strip() + "\n"
+        encryptedMessages = ""
+        encryptedMessages += updateData.decode()
 
-            while updateData.decode() != "Updated":
-                updateData = sock.recv(131072)
+        while "Updated" not in encryptedMessages:
+            updateData = sock.recv(131072)
+            encryptedMessages += updateData.decode()
+            print(encryptedMessages)
+            if "Updated" in encryptedMessages:
+                break
 
-                if updateData.decode() == "Updated":
-                    self.sm.switch_to(self.s2)
-                    thread = thread1()
-                    thread.start()
-                    break
-                else:
-                    messages = messages + decrypt(updateData.decode("utf-8"),key,iv).decode() + "\n"
+        encryptedMessagesList = encryptedMessages.split("\n")
+        print(encryptedMessages)
+        print(encryptedMessagesList)
+        for i in encryptedMessagesList[:-1]:
+            messages += decrypt(i,key,iv).decode() + "\n"
         self.sm.switch_to(self.s2)
         self.messagePrintOutArea.scroll_y = 0
         thread = thread1()
@@ -150,28 +151,27 @@ class CheckAuth(MDApp):
         self.messagePrintOut = MDLabel(text=messages,size_hint=(None,None),width=Window.size[0])
 
         self.entry = MDTextField(size_hint_y=None, height=90,halign="left",hint_text="Enter Message",mode="rectangle")
-        btn2 = MDRaisedButton(text="send",size_hint_y=None, height=50)
-        btn2.bind(on_press=self.sendMessage)
+        self.entry.bind(on_text_validate=self.sendMessage)
         Clock.schedule_interval(self.UPDATE,0.1)
         MessageLayout.add_widget(self.messagePrintOutArea)
         self.messagePrintOutArea.add_widget(self.messagePrintOut)
 
         MessageLayout.add_widget(self.entry)
-        MessageLayout.add_widget(btn2)
         self.s2.add_widget(MessageLayout)
         self.sm.add_widget(self.s1)
         self.sm.add_widget(self.s2)
         
         return self.sm
-
+    def on_stop(self):
+        sock.sendall("end".encode())
+        time.sleep(0.1)
+        sock.close()
 
       
     
 auth = CheckAuth()
 auth.run()
-sock.sendall("end".encode())
-time.sleep(0.1)
-sock.close()
+
 sys.exit()
 
 
