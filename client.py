@@ -25,7 +25,7 @@ name = ""
 handshake = ""
 ip = ""
 messages = ""
-Window.softinput_mode = "below_target"
+
 def encrypt(data,key,iv):
     data= pad(data.encode(),16)
     cipher = AES.new(key.encode('utf-8'),AES.MODE_CBC,iv)
@@ -47,8 +47,7 @@ class thread1(threading.Thread):
             ready = select.select([sock], [], [], )
             if ready[0]:
                 data = sock.recv(131072)
-                print(data.decode()[:-1])
-                messages = messages + decrypt(data.decode("utf-8"),key,iv).decode() + "\n"
+                messages = messages + decrypt(data.decode(),key,iv).decode() + "\n"
                 
 def confirmAndConnect(instance):
     global name
@@ -114,7 +113,7 @@ class CheckAuth(MDApp):
         global messages
         self.messagePrintOut.text = ""
         self.messagePrintOut.text = messages
-        self.messagePrintOut.height = messages.count("\n") * 20
+        self.messagePrintOut.height = (messages.count("\n")+1) * 18
         self.messagePrintOut.text_size = (self.messagePrintOut.width * 0.98, self.messagePrintOut.height)
     def build(self):
 
@@ -148,12 +147,14 @@ class CheckAuth(MDApp):
        
         MessageLayout = MDGridLayout(cols=1)
         self.messagePrintOutArea = MDScrollView(do_scroll_y=True)
-        self.messagePrintOut = MDLabel(text=messages,size_hint=(None,None),width=Window.size[0])
+        self.messagePrintOut = MDLabel(text=messages, size_hint=(None,None),width=Window.size[0])
 
-        self.entry = MDTextField(size_hint_y=None, height=90,halign="left",hint_text="Enter Message",mode="rectangle")
+        self.entry = MDTextField(size_hint_y=None, height=90,halign="left",hint_text="Enter Message",mode="rectangle",font_name="seguiemj")
         self.entry.bind(on_text_validate=self.sendMessage)
         Clock.schedule_interval(self.UPDATE,0.1)
         MessageLayout.add_widget(self.messagePrintOutArea)
+        self.messagePrintOut.font_name = "seguiemj"
+        self.messagePrintOut.font_size = 18
         self.messagePrintOutArea.add_widget(self.messagePrintOut)
 
         MessageLayout.add_widget(self.entry)
